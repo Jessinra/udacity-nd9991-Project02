@@ -203,46 +203,46 @@ Resources:
                 Value: !Ref ProjectName
 
     # ========================= Bastions ===================================
-    # BastionHost:
-    #     Type: AWS::EC2::Instance
-    #     Properties:
-    #         InstanceType: t3.micro
-    #         ImageId: ami-0747bdcabd34c712a
-    #         KeyName: UdacityP02-ssh-key
-    #         NetworkInterfaces:
-    #           - AssociatePublicIpAddress: true
-    #             DeviceIndex: "0"
-    #             GroupSet: 
-    #               - !Ref BastionSecurityGroup
-    #             SubnetId: 
-    #               Fn::ImportValue: !Sub "${ProjectName}-PublicSubnet1"
-    #         BlockDeviceMappings:
-    #           - DeviceName: "/dev/sdk"
-    #             Ebs:
-    #               VolumeSize: 10
-    #         Tags: 
-    #           - Key: Name 
-    #             Value: !Sub "${ProjectName}-Bastion"
+    BastionHost:
+        Type: AWS::EC2::Instance
+        Properties:
+            InstanceType: t3.micro
+            ImageId: ami-0747bdcabd34c712a
+            KeyName: !Ref BastionKeyPair
+            NetworkInterfaces:
+              - AssociatePublicIpAddress: true
+                DeviceIndex: "0"
+                GroupSet: 
+                  - !Ref BastionSecurityGroup
+                SubnetId: 
+                  Fn::ImportValue: !Sub "${ProjectName}-PublicSubnet1"
+            BlockDeviceMappings:
+              - DeviceName: "/dev/sdk"
+                Ebs:
+                  VolumeSize: 10
+            Tags: 
+              - Key: Name 
+                Value: !Sub "${ProjectName}-Bastion"
     
-    # BastionSecurityGroup:
-    #     Type: AWS::EC2::SecurityGroup
-    #     Properties:
-    #         GroupDescription: Allow bastion to do SSH to our hosts
-    #         VpcId:
-    #           Fn::ImportValue: !Sub "${ProjectName}-VPC"
-    #         SecurityGroupIngress:
-    #           - IpProtocol: tcp
-    #             FromPort: 22
-    #             ToPort: 22
-    #             CidrIp: 0.0.0.0/0
-    #         SecurityGroupEgress:
-    #           - IpProtocol: tcp
-    #             FromPort: 0
-    #             ToPort: 65535
-    #             CidrIp: 0.0.0.0/0
-    #         Tags: 
-    #           - Key: Name 
-    #             Value: !Sub "${ProjectName}-Bastion SG"
+    BastionSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Allow bastion to do SSH to our hosts
+            VpcId:
+              Fn::ImportValue: !Sub "${ProjectName}-VPC"
+            SecurityGroupIngress:
+              - IpProtocol: tcp
+                FromPort: 22
+                ToPort: 22
+                CidrIp: 0.0.0.0/0
+            SecurityGroupEgress:
+              - IpProtocol: tcp
+                FromPort: 0
+                ToPort: 65535
+                CidrIp: 0.0.0.0/0
+            Tags: 
+              - Key: Name 
+                Value: !Sub "${ProjectName}-Bastion SG"
 
 Outputs: 
     WebAppLoadBalancer: 
