@@ -34,15 +34,15 @@ Parameters:
 
 
 Resources:
-# ================== VPC & Subnets ==================
+    # ================== VPC & Subnets ==================
     VPC: 
         Type: AWS::EC2::VPC
         Properties:
             CidrBlock: !Ref VpcCIDR
             EnableDnsHostnames: true
             Tags: 
-                - Key: Name 
-                  Value: !Ref ProjectName
+              - Key: Name 
+                Value: !Ref ProjectName
 
     PublicSubnet1: 
         Type: AWS::EC2::Subnet
@@ -52,8 +52,8 @@ Resources:
             CidrBlock: !Ref PublicSubnet1CIDR
             MapPublicIpOnLaunch: true
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Public (AZ1)
+              - Key: Name 
+                Value: !Sub ${ProjectName} Public (AZ1)
 
     PublicSubnet2: 
         Type: AWS::EC2::Subnet
@@ -63,8 +63,8 @@ Resources:
             CidrBlock: !Ref PublicSubnet2CIDR
             MapPublicIpOnLaunch: true
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Public (AZ2)
+              - Key: Name 
+                Value: !Sub ${ProjectName} Public (AZ2)
 
     PrivateSubnet1: 
         Type: AWS::EC2::Subnet
@@ -74,8 +74,8 @@ Resources:
             CidrBlock: !Ref PrivateSubnet1CIDR
             MapPublicIpOnLaunch: false
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Private (AZ1)
+              - Key: Name 
+                Value: !Sub ${ProjectName} Private (AZ1)
 
     PrivateSubnet2: 
         Type: AWS::EC2::Subnet
@@ -85,16 +85,16 @@ Resources:
             CidrBlock: !Ref PrivateSubnet2CIDR
             MapPublicIpOnLaunch: false
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Private (AZ2)
+              - Key: Name 
+                Value: !Sub ${ProjectName} Private (AZ2)
 
-# ================== IGW & NAT ==================
+    # ================== IGW & NAT ==================
     InternetGateway:
         Type: AWS::EC2::InternetGateway
         Properties:
             Tags:
-                - Key: Name
-                  Value: !Sub ${ProjectName} IGW
+              - Key: Name
+                Value: !Sub ${ProjectName} IGW
 
     InternetGatewayAttachment:
         Type: AWS::EC2::VPCGatewayAttachment
@@ -108,8 +108,8 @@ Resources:
         Properties: 
             Domain: vpc
             Tags:
-                - Key: Name
-                  Value: !Ref ProjectName
+              - Key: Name
+                Value: !Ref ProjectName
 
     NatGateway: 
         Type: AWS::EC2::NatGateway
@@ -117,17 +117,17 @@ Resources:
             AllocationId: !GetAtt NatGatewayEIP.AllocationId
             SubnetId: !Ref PublicSubnet1
             Tags:
-                - Key: Name
-                  Value: !Sub ${ProjectName} NAT
+              - Key: Name
+                Value: !Sub ${ProjectName} NAT
 
-#  ================== Route Tables & Associations ================== 
+    #  ================== Route Tables & Associations ================== 
     PublicRouteTable:
         Type: AWS::EC2::RouteTable
         Properties: 
             VpcId: !Ref VPC
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Public RT
+              - Key: Name 
+                Value: !Sub ${ProjectName} Public RT
 
     DefaultPublicRoute: 
         Type: AWS::EC2::Route
@@ -154,8 +154,8 @@ Resources:
         Properties: 
             VpcId: !Ref VPC
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${ProjectName} Private RT
+              - Key: Name 
+                Value: !Sub ${ProjectName} Private RT
 
     DefaultPrivateRoute:
         Type: AWS::EC2::Route
@@ -175,3 +175,46 @@ Resources:
         Properties:
             RouteTableId: !Ref PrivateRouteTable
             SubnetId: !Ref PrivateSubnet2
+
+Outputs: 
+    VPC: 
+        Description: A reference to the created VPC
+        Value: !Ref VPC
+        Export:
+            Name: !Sub ${ProjectName}-VPC
+
+    PublicSubnets:
+        Description: A list of the public subnets
+        Value: !Join [ ",", [ !Ref PublicSubnet1, !Ref PublicSubnet2 ]]
+        Export:
+            Name: !Sub ${ProjectName}-PublicSubnets
+
+    PublicSubnet1:
+        Description: A reference to the public subnet in the 1st Availability Zone
+        Value: !Ref PublicSubnet1
+        Export:
+            Name: !Sub ${ProjectName}-PublicSubnet1
+
+    PublicSubnet2: 
+        Description: A reference to the public subnet in the 2nd Availability Zone
+        Value: !Ref PublicSubnet2
+        Export:
+            Name: !Sub ${ProjectName}-PublicSubnet2
+
+    PrivateSubnets:
+        Description: A list of the private subnets
+        Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
+        Export:
+            Name: !Sub ${ProjectName}-PrivateSubnets
+
+    PrivateSubnet1:
+        Description: A reference to the private subnet in the 1st Availability Zone
+        Value: !Ref PrivateSubnet1
+        Export:
+            Name: !Sub ${ProjectName}-PrivateSubnet1
+
+    PrivateSubnet2: 
+        Description: A reference to the private subnet in the 2nd Availability Zone
+        Value: !Ref PrivateSubnet2
+        Export:
+            Name: !Sub ${ProjectName}-PrivateSubnet2
