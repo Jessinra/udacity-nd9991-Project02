@@ -1,4 +1,6 @@
-# Project 02
+# Project 02: Deploy a high-availability web app using CloudFormation
+
+Load Balancer DNS `UdacityP02-ALB-1955729426.us-east-1.elb.amazonaws.com`
 
 Theres 2 main .yml script for deploying cloud formation
 - network.yml -> setup all VPC, Subnets, IGW, NAT, Route Tables etc.
